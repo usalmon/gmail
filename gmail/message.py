@@ -214,7 +214,7 @@ class Message():
             self.attachments = []
             for payload in self.message._payload:
                 for part in payload.walk():
-                    if part.get_content_type() == 'application/octet-stream':
+                    if part.get_content_type() in ['application/octet-stream', 'text/xml', 'application/pdf', 'application/xml', 'application/zip']:
                         self.attachments.append(Attachment(part))
 
     def fetch(self):
