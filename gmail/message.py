@@ -209,6 +209,14 @@ class Message():
                 if not isinstance(attachment, basestring) and attachment.get('Content-Disposition') is not None and attachment.get_filename() is not None
         ]
 
+        # Parse attachments into attachment objects array for this message if couldnt be found as normal attachments
+        if not self.attachments and len(self.message._payload) > 0:
+            self.attachments = []
+            for payload in self.message._payload:
+                for part in payload.walk():
+                    if part.get_content_type() == 'application/octet-stream':
+                        self.attachments.append(Attachment(part))
+
     def fetch(self):
         if not self.message:
             response, results = self.gmail.imap.uid('FETCH', self.uid, '(BODY.PEEK[] FLAGS X-GM-THRID X-GM-MSGID X-GM-LABELS)')
